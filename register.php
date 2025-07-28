@@ -120,174 +120,259 @@ try {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root {
-            --primary: #FFC107;
-            --primary-dark: #FFA000;
-            --secondary: #FFF8E1;
-            --light: #ffffff;
-            --dark: #343a40;
-            --danger: #e74c3c;
-            --border-radius: 0.375rem;
-            --box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
-            --transition: all 0.3s ease;
-        }
-        
-        body {
-            background-color: var(--secondary);
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            line-height: 1.6;
-            color: var(--dark);
-        }
-        
-        .auth-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            padding: 1rem;
-            background-color: var(--secondary);
-        }
-        
-        .auth-card {
-            max-width: 500px;
-            width: 100%;
-            margin: 0 auto;
-            box-shadow: var(--box-shadow);
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            border: none;
-            transition: var(--transition);
-        }
-        
-        .auth-card:hover {
-            box-shadow: 0 0.75rem 1.5rem rgba(0,0,0,0.15);
-        }
-        
-        .auth-header {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: var(--dark);
-            padding: 1.5rem;
-            text-align: center;
-            position: relative;
-        }
-        
-        .auth-header h2 {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-        
-        .logo-container {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 1rem;
-            background-color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            border: 3px solid white;
-        }
-        
-        .logo-container img {
-            max-width: 90%;
-            max-height: 90%;
-            border-radius: 50%;
-        }
-        
-        .auth-body {
-            padding: 2rem;
-            background-color: var(--light);
-        }
-        
-        .form-label {
-            font-weight: 500;
-            color: var(--dark);
-            margin-bottom: 0.5rem;
-            font-size: 0.95rem;
-        }
-        
-        .form-control {
-            padding: 0.75rem 1rem;
-            border-radius: var(--border-radius);
-            border: 1px solid #dee2e6;
-            transition: var(--transition);
-        }
-        
-        .form-control:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
-        }
-        
-        .password-wrapper {
-            position: relative;
-        }
-        
-        .password-toggle {
-            position: absolute;
-            right: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #adb5bd;
-            transition: var(--transition);
-        }
-        
-        .password-toggle:hover {
-            color: var(--primary-dark);
-        }
-        
-        .btn-primary {
-            background-color: var(--primary);
-            border: none;
-            padding: 0.75rem;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-            border-radius: var(--border-radius);
-            transition: var(--transition);
-            color: var(--dark);
-        }
-        
-        .btn-primary:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-            color: var(--dark);
-        }
-        
-        .text-muted {
-            font-size: 0.85rem;
-            color: #6c757d !important;
-        }
-        
-        .invalid-feedback {
-            font-size: 0.85rem;
-        }
-        
-        .form-select {
-            padding: 0.75rem 1rem;
-            border-radius: var(--border-radius);
-            transition: var(--transition);
-        }
-        
-        .form-select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
-        }
-        
-        @media (max-width: 576px) {
-            .auth-body {
-                padding: 1.5rem;
-            }
-            
-            .auth-header {
-                padding: 1.25rem;
-            }
-            
-            .logo-container {
-                width: 70px;
-                height: 70px;
-                margin-bottom: 0.75rem;
-            }
-        }
+     :root {
+    --primary: #FFC107;
+    --primary-dark: #FFA000;
+    --secondary: #FFF8E1;
+    --light: #ffffff;
+    --dark: #343a40;
+    --danger: #e74c3c;
+    --border-radius: 0.375rem;
+    --box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+    --transition: all 0.3s ease;
+    --input-line: #ced4da;
+    --input-line-focus: var(--primary);
+}
+
+body {
+    background-color: var(--secondary);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    color: var(--dark);
+    margin: 0;
+    padding: 0;
+}
+
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background-color: var(--secondary);
+}
+
+.auth-card {
+    max-width: 500px;
+    width: 100%;
+    margin: 0 auto;
+    box-shadow: var(--box-shadow);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    border: none;
+    transition: var(--transition);
+    background-color: var(--light);
+}
+
+.auth-header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: var(--dark);
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+}
+
+.auth-header h2 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.logo-container {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1rem;
+    background-color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border: 3px solid white;
+}
+
+.logo-container img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 50%;
+}
+
+.auth-body {
+    padding: 2rem;
+}
+
+/* Form Elements - Borderless Design */
+.form-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+    display: block;
+    transition: var(--transition);
+}
+
+.form-control, .form-select {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 0;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--dark);
+    background-color: transparent;
+    background-clip: padding-box;
+    border: none;
+    border-bottom: 1px solid var(--input-line);
+    border-radius: 0;
+    transition: var(--transition);
+    box-shadow: none;
+}
+
+.form-control:focus, .form-select:focus {
+    outline: 0;
+    border-bottom: 2px solid var(--input-line-focus);
+    box-shadow: none;
+}
+
+/* Underline Animation */
+.form-group::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--primary);
+    transition: var(--transition);
+}
+
+.form-group:focus-within::after {
+    width: 100%;
+}
+
+/* Password Toggle */
+.password-wrapper {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: var(--input-line);
+    transition: var(--transition);
+    padding: 0.5rem;
+}
+
+.password-toggle:hover {
+    color: var(--primary-dark);
+}
+
+/* Validation States */
+.is-invalid {
+    border-bottom-color: var(--danger) !important;
+}
+
+.invalid-feedback {
+    display: none;
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--danger);
+}
+
+.is-invalid ~ .invalid-feedback {
+    display: block;
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color: var(--primary);
+    border: none;
+    padding: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    color: var(--dark);
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Link Styles */
+.text-center a {
+    color: var(--primary-dark);
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.text-center a:hover {
+    color: var(--primary);
+    text-decoration: underline;
+}
+
+/* Alert Styles */
+.alert {
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.alert-danger {
+    background-color: rgba(231, 76, 60, 0.1);
+    border-left: 4px solid var(--danger);
+    color: var(--danger);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 576px) {
+    .auth-container {
+        padding: 1rem;
+    }
+    
+    .auth-header {
+        padding: 1.5rem;
+    }
+    
+    .auth-body {
+        padding: 1.5rem;
+    }
+    
+    .logo-container {
+        width: 70px;
+        height: 70px;
+    }
+}
+
+/* Animation for form elements */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.auth-body > * {
+    animation: fadeIn 0.4s ease forwards;
+}
+
+.auth-body > *:nth-child(1) { animation-delay: 0.1s; }
+.auth-body > *:nth-child(2) { animation-delay: 0.2s; }
+.auth-body > *:nth-child(3) { animation-delay: 0.3s; }
+.auth-body > *:nth-child(4) { animation-delay: 0.4s; }
+.auth-body > *:nth-child(5) { animation-delay: 0.5s; }
+.auth-body > *:nth-child(6) { animation-delay: 0.6s; }
+.auth-body > *:nth-child(7) { animation-delay: 0.7s; }
+.auth-body > *:nth-child(8) { animation-delay: 0.8s; }
     </style>
 </head>
 <body>

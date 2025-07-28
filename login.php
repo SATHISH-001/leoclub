@@ -12,7 +12,7 @@ $pdo = getPDO();
 
 // Store current URL for redirect
 if (!isset($_SESSION['redirect_url'])) {
-    $_SESSION['redirect_url'] = $_SERVER['HTTP_REFERER'] ?? 'index.php';
+  $_SESSION['redirect_url'] = $_SERVER['HTTP_REFERER'] ?? 'index.php';
 }
 
 // Initialize variables
@@ -20,43 +20,44 @@ $loginError = '';
 
 // Process login form
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
-    $email = sanitizeInput($_POST['email']);
-    $password = $_POST['password'];
-    
-    try {
-        $stmt = $pdo->prepare("SELECT * FROM members WHERE email = ?");
-        $stmt->execute([$email]);
-        $user = $stmt->fetch();
-        
-        if ($user && password_verify($password, $user['password'])) {
-            // Set session variables
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['name'] = $user['name'];
-            $_SESSION['email'] = $user['email'];
-            $_SESSION['role'] = $user['role'];
-            
-            // Clear output buffers
-            while (ob_get_level() > 0) {
-                ob_end_clean();
-            }
-            
-            $redirect = $_SESSION['redirect_url'] ?? 'index.php';
-            unset($_SESSION['redirect_url']);
-            
-            header("Location: " . $redirect);
-            exit();
-        } else {
-            $loginError = "Invalid email or password.";
-        }
-    } catch (PDOException $e) {
-        $loginError = "Database error. Please try again later.";
-        error_log("Login error: " . $e->getMessage());
+  $email = sanitizeInput($_POST['email']);
+  $password = $_POST['password'];
+
+  try {
+    $stmt = $pdo->prepare("SELECT * FROM members WHERE email = ?");
+    $stmt->execute([$email]);
+    $user = $stmt->fetch();
+
+    if ($user && password_verify($password, $user['password'])) {
+      // Set session variables
+      $_SESSION['user_id'] = $user['id'];
+      $_SESSION['name'] = $user['name'];
+      $_SESSION['email'] = $user['email'];
+      $_SESSION['role'] = $user['role'];
+
+      // Clear output buffers
+      while (ob_get_level() > 0) {
+        ob_end_clean();
+      }
+
+      $redirect = $_SESSION['redirect_url'] ?? 'index.php';
+      unset($_SESSION['redirect_url']);
+
+      header("Location: " . $redirect);
+      exit();
+    } else {
+      $loginError = "Invalid email or password.";
     }
+  } catch (PDOException $e) {
+    $loginError = "Database error. Please try again later.";
+    error_log("Login error: " . $e->getMessage());
+  }
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>LEO Club - Member Login</title>
@@ -84,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
 
     .login-container {
       /* background: rgba(255, 255, 255, 0.95); */
-      background:transparent;
+      background: transparent;
       border-radius: 15px;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
       position: relative;
@@ -102,11 +103,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
       left: -50%;
       width: 200%;
       height: 200%;
-      background: linear-gradient(
-        to bottom right,
-        rgba(255, 193, 7, 0.1),
-        rgba(255, 193, 7, 0.3)
-      );
+      background: linear-gradient(to bottom right,
+          rgba(255, 193, 7, 0.1),
+          rgba(255, 193, 7, 0.3));
       transform: rotate(15deg);
       z-index: -1;
     }
@@ -165,23 +164,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
     }
 
     input {
-      background-color: #f5f5f5;
+      background: transparent;
       border: none;
-      padding: 15px 15px 15px 45px;
+      border-bottom: 2px solid #ccc;
+      padding: 10px 10px 10px 40px;
       width: 100%;
-      border-radius: 8px;
-      font-size: 14px;
-      transition: all 0.3s;
-      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+      font-size: 15px;
+      color: #fff;
+      outline: none;
+      transition: border-color 0.3s;
     }
 
     input:focus {
-      outline: none;
-      background-color: #fff;
-      box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.3);
+      border-bottom: 2px solid #ffc107;
+      background: transparent;
+      box-shadow: none;
     }
 
-    input:focus + i {
+    input::placeholder {
+      color: #aaa;
+    }
+
+
+    input:focus+i {
       color: #ffc107;
     }
 
@@ -284,11 +289,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
       .login-container {
         padding: 30px 20px;
       }
-      
+
       h1 {
         font-size: 24px;
       }
-      
+
       .logo {
         width: 80px;
         height: 80px;
@@ -296,6 +301,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
     }
   </style>
 </head>
+
 <body>
   <div class="login-container">
     <div class="logo-container">
@@ -303,19 +309,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
       <h1>Member Login</h1>
       <p class="tagline">Enter your credentials to access your account</p>
     </div>
-    
+
     <?php if ($loginError): ?>
       <div class="alert alert-danger">
         <i class="fas fa-exclamation-circle"></i> <?= htmlspecialchars($loginError) ?>
       </div>
     <?php endif; ?>
-    
+
     <form method="POST" action="" id="loginForm">
       <div class="input-group">
         <i class="fas fa-envelope"></i>
         <input type="email" name="email" placeholder="Email Address" required />
       </div>
-      
+
       <div class="input-group">
         <i class="fas fa-lock"></i>
         <input type="password" name="password" id="loginPassword" placeholder="Password" required />
@@ -323,14 +329,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
           <i class="far fa-eye"></i>
         </button>
       </div>
-      
+
       <div class="forgot-password">
         <a href="forgot-password.php">Forgot your password?</a>
       </div>
-      
+
       <button type="submit" name="login">Sign In</button>
     </form>
-    
+
     <div class="footer">
       Don't have an account? <a href="register.php">Sign up</a>
     </div>
@@ -341,7 +347,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
       const input = document.getElementById(inputId);
       const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
       input.setAttribute('type', type);
-      
+
       // Toggle eye icon
       if (type === 'password') {
         button.innerHTML = '<i class="far fa-eye"></i>';
@@ -353,12 +359,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
     // Add focus effects
     document.addEventListener('DOMContentLoaded', function() {
       const inputs = document.querySelectorAll('input');
-      
+
       inputs.forEach(input => {
         input.addEventListener('focus', function() {
           this.parentNode.querySelector('i').style.color = '#ffc107';
         });
-        
+
         input.addEventListener('blur', function() {
           this.parentNode.querySelector('i').style.color = '#777';
         });
@@ -366,7 +372,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
     });
   </script>
 </body>
+
 </html>
-<?php 
+<?php
 ob_end_flush();
 ?>
