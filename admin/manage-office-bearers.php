@@ -85,6 +85,71 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: manage-office-bearers.php");
             exit();
         }
+        
+        // Handle LEO Fam update
+        if (isset($_POST['save_leo_fam'])) {
+            $instagram = sanitizeInput($_POST['leo_fam_instagram'] ?? '');
+            $existingPhoto = $_POST['existing_leo_fam_photo'] ?? '';
+            $photo = $existingPhoto;
+            
+            // Handle file upload
+            if (isset($_FILES['leo_fam_photo']) && $_FILES['leo_fam_photo']['error'] === UPLOAD_ERR_OK) {
+                // Create directory if it doesn't exist
+                if (!file_exists(LEO_FAM_UPLOAD_DIR)) {
+                    mkdir(LEO_FAM_UPLOAD_DIR, 0755, true);
+                }
+
+                // Validate image
+                $allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+                $maxSize = 5 * 1024 * 1024; // 5MB
+                $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
+                $mimeType = finfo_file($fileInfo, $_FILES['leo_fam_photo']['tmp_name']);
+
+                if (!in_array($mimeType, $allowedTypes)) {
+                    throw new Exception("Only JPG, PNG and WEBP images are allowed");
+                }
+
+                if ($_FILES['leo_fam_photo']['size'] > $maxSize) {
+                    throw new Exception("Image size must be less than 5MB");
+                }
+
+                // Generate safe filename
+                $extension = $mimeType === 'image/jpeg' ? '.jpg' : 
+                             ($mimeType === 'image/png' ? '.png' : '.webp');
+                $filename = 'leo_fam_' . uniqid() . $extension;
+                $targetPath = LEO_FAM_UPLOAD_DIR . $filename;
+
+                if (move_uploaded_file($_FILES['leo_fam_photo']['tmp_name'], $targetPath)) {
+                    // Delete old photo if exists
+                    if ($existingPhoto && file_exists(LEO_FAM_UPLOAD_DIR . $existingPhoto)) {
+                        unlink(LEO_FAM_UPLOAD_DIR . $existingPhoto);
+                    }
+                    $photo = $filename;
+                } else {
+                    throw new Exception("Failed to upload photo");
+                }
+            }
+            
+            // Check if LEO Fam record exists
+            $stmt = $pdo->query("SELECT COUNT(*) FROM leo_fam LIMIT 1");
+            $count = $stmt->fetchColumn();
+            
+            if ($count > 0) {
+                // Update existing record
+                $stmt = $pdo->prepare("UPDATE leo_fam SET photo = ?, instagram = ?");
+                $stmt->execute([$photo, $instagram]);
+                $message = "LEO Fam updated successfully!";
+            } else {
+                // Insert new record
+                $stmt = $pdo->prepare("INSERT INTO leo_fam (photo, instagram) VALUES (?, ?)");
+                $stmt->execute([$photo, $instagram]);
+                $message = "LEO Fam added successfully!";
+            }
+            
+            $_SESSION['success'] = $message;
+            header("Location: manage-office-bearers.php");
+            exit();
+        }
     } catch (Exception $e) {
         $_SESSION['error'] = $e->getMessage();
         header("Location: manage-office-bearers.php");
@@ -142,6 +207,10 @@ foreach ($bearers as $bearer) {
     $groupedBearers[$bearer['year_type']][] = $bearer;
 }
 
+// Get LEO Fam data
+$stmt = $pdo->query("SELECT * FROM leo_fam LIMIT 1");
+$leoFam = $stmt->fetch(PDO::FETCH_ASSOC);
+
 require_once 'heading.php';
 ?>
 
@@ -162,9 +231,14 @@ require_once 'heading.php';
             <main class="col-md-9 col-lg-10 ms-sm-auto px-md-4 py-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h1 class="h2">Manage Office Bearers</h1>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bearerModal" onclick="resetForm()">
-                        <i class="fas fa-plus me-1"></i> Add New
-                    </button>
+                    <div>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bearerModal" onclick="resetForm()">
+                            <i class="fas fa-plus me-1"></i> Add Bearer
+                        </button>
+                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#leoFamModal">
+                            <i class="fas fa-users me-1"></i> Update LEO Fam
+                        </button>
+                    </div>
                 </div>
                 
                 <?php if (isset($_SESSION['success'])): ?>
@@ -213,15 +287,32 @@ require_once 'heading.php';
                     </div>
                 </div>
                 
-                <!-- Past Office Bearers -->
+                <!-- LEO Fam Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-dark text-white">
                         <h5 class="mb-0">LEO Fam</h5>
                     </div>
                     <div class="card-body">
-                        <div class="alert alert-info">
-                            Note: LEO Fam section displays a group photo with the club's Instagram ID. 
-                            To update this, replace the image file "leo_fam_photo.webp" in the media storage.
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Current Group Photo</h5>
+                                <?php if (!empty($leoFam['photo'])): ?>
+                                    <img src="<?= LEO_FAM_UPLOAD_URL . htmlspecialchars($leoFam['photo']) ?>" 
+                                         class="img-fluid rounded mb-3" 
+                                         style="max-height: 300px;"
+                                         alt="Current LEO Fam Photo">
+                                    <p><strong>Instagram:</strong> <?= !empty($leoFam['instagram']) ? '@'.htmlspecialchars($leoFam['instagram']) : 'Not set' ?></p>
+                                <?php else: ?>
+                                    <div class="alert alert-info">No group photo uploaded yet</div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="alert alert-info">
+                                    <h5><i class="fas fa-info-circle"></i> Information</h5>
+                                    <p>LEO Fam section displays the group photo with Instagram ID on the Office Bearers page.</p>
+                                    <p>Click the "Update LEO Fam" button to change the photo or Instagram ID.</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -296,8 +387,54 @@ require_once 'heading.php';
     </div>
 </div>
 
+<!-- LEO Fam Modal -->
+<div class="modal fade" id="leoFamModal" tabindex="-1" aria-labelledby="leoFamModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="existing_leo_fam_photo" value="<?= !empty($leoFam['photo']) ? htmlspecialchars($leoFam['photo']) : '' ?>">
+                
+                <div class="modal-header">
+                    <h5 class="modal-title" id="leoFamModalLabel">Update LEO Fam</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="leo_fam_photo" class="form-label">Group Photo *</label>
+                        <input type="file" class="form-control" id="leo_fam_photo" name="leo_fam_photo" accept="image/*">
+                        <div class="form-text">Max size: 5MB. Allowed types: JPG, PNG, WEBP</div>
+                        <?php if (!empty($leoFam['photo'])): ?>
+                            <div class="mt-2">
+                                <img src="<?= LEO_FAM_UPLOAD_URL . htmlspecialchars($leoFam['photo']) ?>" 
+                                     class="img-thumbnail" 
+                                     style="max-height: 150px;" 
+                                     alt="Current LEO Fam Photo">
+                                <div class="mt-1">Current photo</div>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="leo_fam_instagram" class="form-label">Instagram ID (without @)</label>
+                        <input type="text" class="form-control" id="leo_fam_instagram" name="leo_fam_instagram" 
+                               value="<?= !empty($leoFam['instagram']) ? htmlspecialchars($leoFam['instagram']) : '' ?>" 
+                               placeholder="leoacgcet">
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" name="save_leo_fam">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Bearer modal functionality
     const bearerModal = document.getElementById('bearerModal');
     const form = document.getElementById('bearerForm');
     const modalTitle = document.getElementById('bearerModalLabel');
@@ -305,7 +442,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const existingPhoto = document.getElementById('existingPhoto');
     const photoPreview = document.getElementById('photoPreview');
     
-    // Edit buttons
+    // Edit buttons for office bearers
     document.querySelectorAll('.edit-bearer').forEach(button => {
         button.addEventListener('click', function() {
             modalTitle.textContent = 'Edit Office Bearer';
@@ -333,7 +470,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // File input preview
+    // File input preview for office bearers
     document.getElementById('photo').addEventListener('change', function(e) {
         if (e.target.files.length > 0) {
             const file = e.target.files[0];
@@ -342,6 +479,31 @@ document.addEventListener('DOMContentLoaded', function() {
             reader.onload = function(event) {
                 photoPreview.innerHTML = `
                     <img src="${event.target.result}" class="img-thumbnail" style="max-height:100px;">
+                    <div class="mt-1">${file.name}</div>
+                `;
+            };
+            
+            reader.readAsDataURL(file);
+        }
+    });
+    
+    // File input preview for LEO Fam photo
+    document.getElementById('leo_fam_photo').addEventListener('change', function(e) {
+        if (e.target.files.length > 0) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            const previewContainer = document.getElementById('leoFamPhotoPreview');
+            
+            if (!previewContainer) {
+                const container = document.createElement('div');
+                container.id = 'leoFamPhotoPreview';
+                container.className = 'mt-2';
+                this.parentNode.appendChild(container);
+            }
+            
+            reader.onload = function(event) {
+                document.getElementById('leoFamPhotoPreview').innerHTML = `
+                    <img src="${event.target.result}" class="img-thumbnail" style="max-height:150px;">
                     <div class="mt-1">${file.name}</div>
                 `;
             };

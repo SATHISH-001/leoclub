@@ -83,7 +83,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
     }
 
     .login-container {
-      background: rgba(255, 255, 255, 0.95);
+      /* background: rgba(255, 255, 255, 0.95); */
+      background:transparent;
       border-radius: 15px;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
       position: relative;

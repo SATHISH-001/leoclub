@@ -15,6 +15,8 @@ define('DEFAULT_ADMIN_PASSWORD', 'Admin@123');
 define('UPLOAD_BASE_DIR', $_SERVER['DOCUMENT_ROOT'] . '/assets/uploads/');
 define('UPLOAD_BASE_URL', '/assets/uploads/');
 
+define('LEO_FAM_UPLOAD_DIR', __DIR__ . '/uploads/leo_fam/');
+define('LEO_FAM_UPLOAD_URL', '/uploads/leo_fam/');
 // Specific directories
 
 define('EVENTS_UPLOAD_DIR', UPLOAD_BASE_DIR . 'events/');

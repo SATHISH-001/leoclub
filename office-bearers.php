@@ -292,11 +292,11 @@ $validPastBearers = array_filter($groupedBearers['past'], function($bearer) {
     <div class="container">
         <!-- Current Office Bearers -->
         <div class="section-title">
-            <h2>Current Office Bearers</h2>
+            <h2>Office Bearers</h2>
         </div>
         
         <?php if (empty($validCurrentBearers)): ?>
-            <div class="alert alert-info text-center">No current office bearers found.</div>
+            <div class="alert alert-info text-center">No  office bearers found.</div>
         <?php else: ?>
             <div class="row">
                 <?php foreach ($validCurrentBearers as $bearer): ?>
@@ -309,11 +309,11 @@ $validPastBearers = array_filter($groupedBearers['past'], function($bearer) {
         
         <!-- 2nd Year Coordinators -->
         <div class="section-title">
-            <h2>3rd Year Coordinators</h2>
+            <h2>3rd Year Organizers</h2>
         </div>
         
         <?php if (empty($valid2ndYearBearers)): ?>
-            <div class="alert alert-info text-center">No 3rd year coordinators found.</div>
+            <div class="alert alert-info text-center">No 3rd year Organizers found.</div>
         <?php else: ?>
             <div class="row">
                 <?php foreach ($valid2ndYearBearers as $bearer): ?>
@@ -343,19 +343,19 @@ $validPastBearers = array_filter($groupedBearers['past'], function($bearer) {
         
         <!-- LEO Fam Section -->
         <div class="section-title">
-            <h2>LEO Fam</h2>
+            <h2>LEO Fam's</h2>
         </div>
         
         <div class="leo-fam-section">
             <?php if (!empty($leoFam['photo'])): ?>
-                <img src="<?= LEO_FAM_UPLOAD_URL. htmlspecialchars($leoFam['photo']) ?>" 
+                <img src="<?= LEO_FAM_UPLOAD_URL . htmlspecialchars($leoFam['photo']) ?>" 
                      alt="LEO Fam Group Photo" 
                      class="leo-fam-photo">
             <?php else: ?>
                 <div class="alert alert-info">No group photo uploaded yet</div>
             <?php endif; ?>
             <div class="leo-fam-instagram">
-                <i class="fab fa-instagram"></i> <?= !empty($leoFam['instagram']) ? '@'.htmlspecialchars($leoFam['instagram']) : 'leo_club_of_acgcet' ?>
+                <i class="fab fa-instagram"></i> <?= !empty($leoFam['instagram']) ? '@'.htmlspecialchars($leoFam['instagram']) : '@leo_club_of_acgcet' ?>
             </div>
         </div>
     </div>

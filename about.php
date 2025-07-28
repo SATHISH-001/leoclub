@@ -51,7 +51,7 @@ try {
                     <p class="lead mb-4 text-white-50">Leadership Through Service | Excellence Through Action</p>
                     <div class="d-flex justify-content-center gap-3">
                         <a href="#mission" class="btn btn-light btn-lg px-4">Our Purpose</a>
-                        <a href="#team" class="btn btn-outline-light btn-lg px-4">Meet The Team</a>
+                        <a href="office-bearers.php" class="btn btn-outline-light btn-lg px-4">Meet The Team</a>
                     </div>
                 </div>
             </div>

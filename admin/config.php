@@ -25,6 +25,8 @@ define('BEARERS_UPLOAD_URL', UPLOAD_BASE_URL . 'office-bearers/');
 define('NEWS_UPLOAD_DIR', UPLOAD_BASE_DIR . 'news/');
 define('NEWS_UPLOAD_URL', UPLOAD_BASE_URL . 'news/');
 // Admin configuration
+define('LEO_FAM_UPLOAD_DIR', __DIR__ . '/uploads/leo_fam/');
+define('LEO_FAM_UPLOAD_URL', '/uploads/leo_fam/');
 // Create PDO connection
 require_once __DIR__ . '/functions.php'; // Updated path
 
